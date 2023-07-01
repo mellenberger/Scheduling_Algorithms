@@ -5,11 +5,6 @@ import numpy as np
 from ETC_Generation import *
 from Helper_funcs import *
 
-#Create ETC
-t = 5
-m = 3
-etc = CVB_ETC_1(t, m, 0.1, 0.1, 1000)
-
 def min_min(t, m, etc):
     #Initialize Variables
     need_assignment = np.linspace(0, t-1, num=t, dtype=int)
@@ -32,9 +27,7 @@ def min_min(t, m, etc):
 
         #Update machine times
         machine_times[machine] = machine_times[machine] + etc[task][machine]
-    print(order)
 
     makespan = calculate_makespan(order, etc)
-    print("Makespan:", makespan)
 
     return order, makespan
