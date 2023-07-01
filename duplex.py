@@ -24,7 +24,7 @@ def duplex(t, m, etc):
 
     return result, makespan
 
-# Call Max-Min to run 100 times, gather average makespan & time
+# Call Duplex to run 100 times, gather average makespan & time
 #High task heterogeneity low machine heterogeneity
 t = 3200
 m = 100
@@ -34,7 +34,7 @@ average_makespan = 0
 for i in range(100):
     etc = CVB_ETC_1(t, m, 0.3, 0.1, 1000)
     start_time = time.time()
-    order, makespan = max_min(t,m,etc)
+    order, makespan = duplex(t,m,etc)
     end_time = time.time()
     average_time += (end_time - start_time)
     average_makespan += (makespan)
