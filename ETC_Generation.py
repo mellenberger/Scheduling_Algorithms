@@ -19,7 +19,7 @@ def CVB_ETC_1(t, m, Vtask, Vmach, utask):
             etc_matrix[i][j] = gamma.rvs(sigma_mach, scale=Bmach[i])
     return etc_matrix
 
-def CVB_ETC_2(t,m,umach,vtask,vmach):
+def CVB_ETC_2(t,m,vtask,vmach, umach):
     # Coefficient of Variation ETC matrix
     # Low task heterogeneity high machine heterogeneity
     atask = 1 / (vtask**2)

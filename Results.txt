@@ -1,0 +1,181 @@
+OLB Results: compute-liquid
+Low task, Low machine:                                                                                                                                                                                                                                                                         
+Average Time: 0.0675230622291565                                                                                                                                                                                                                                                               
+Average Makespan: 32712.205628420088 
+
+High Task, High Machine:                                                                                                                                                                                                                                                                       
+Average Time: 0.07344561576843261                                                                                                                                                                                                                                                              
+Average Makespan: 36693.34677031492 
+
+High Task, Low Machine:                                                                                                                                                                                                                                                                        
+Average Time: 0.07161170959472657                                                                                                                                                                                                                                                              
+Average Makespan: 33905.97482878212   
+
+Low Task, High Machine:                                                                                                                                                                                                                                                                        
+Average Time: 0.07080820083618164                                                                                                                                                                                                                                                              
+Average Makespan: 21673.70117799668 
+
+
+
+MET Results:
+Low task, Low machine:                                                                                                                                                                                                                                                                         
+Average Time: 0.065859375                                                                                                                                                                                                                                                                      
+Average Makespan: 36083.34917853836 
+
+High Task, High Machine:                                                                                                                                                                                                                                                                       
+Average Time: 0.06568445205688477                                                                                                                                                                                                                                                              
+Average Makespan: 5952.411315817651
+
+High Task, Low Machine:                                                                                                                                                                                                                                                                        
+Average Time: 0.06567004203796387                                                                                                                                                                                                                                                              
+Average Makespan: 37969.46837405337  
+
+Low Task, High Machine:                                                                                                                                                                                                                                                                        
+Average Time: 0.08240062713623048                                                                                                                                                                                                                                                              
+Average Makespan: 282397.4968024392  
+
+
+
+MCT Results:
+Low task, Low machine:                                                                                                                                                                                                                                                                         
+Average Time: 0.07390623092651367                                                                                                                                                                                                                                                              
+Average Makespan: 27769.16457840395  
+
+High Task, High Machine:                                                                                                                                                                                                                                                                       
+Average Time: 0.0734028434753418                                                                                                                                                                                                                                                               
+Average Makespan: 5234.862608581866
+
+High Task, Low Machine:                                                                                                                                                                                                                                                                        
+Average Time: 0.07325526237487794                                                                                                                                                                                                                                                              
+Average Makespan: 28512.931384819163 
+
+Low Task, High Machine:                                                                                                                                                                                                                                                                        
+Average Time: 0.09457746505737305                                                                                                                                                                                                                                                              
+Average Makespan: 18383.38817758996 
+
+
+Min-Min Results:
+Low task, Low machine:                                                                                                                                                                                                                                                                         
+Average Time: 3.1837997150421145                                                                                                                                                                                                                                                               
+Average Makespan: 25358.583904975792 
+
+High Task, High Machine:                                                                                                                                                                                                                                                                       
+Average Time: 3.1487274265289305                                                                                                                                                                                                                                                               
+Average Makespan: 4559.411534026704  
+
+High Task, Low Machine:                                                                                                                                                                                                                                                                        
+Average Time: 3.126260995864868                                                                                                                                                                                                                                                                
+Average Makespan: 26923.211559197633  
+
+Low Task, High Machine:                                                                                                                                                                                                                                                                        
+Average Time: 36.513101263046266                                                                                                                                                                                                                                                               
+Average Makespan: 16904.85077177821 
+
+
+Max-Min Results:
+Low task, Low machine:                                                                                                                                                                                                                                                                         
+Average Time: 3.486207056045532                                                                                                                                                                                                                                                                
+Average Makespan: 30322.68582139157 
+
+High Task, High Machine:                                                                                                                                                                                                                                                                       
+Average Time: 3.4838631916046143                                                                                                                                                                                                                                                               
+Average Makespan: 7979.203904733653 
+
+High Task, Low Machine:                                                                                                                                                                                                                                                                        
+Average Time: 3.4838430213928224                                                                                                                                                                                                                                                               
+Average Makespan: 29287.02165630742 
+
+Low Task, High Machine:                                                                                                                                                                                                                                                                        
+Average Time: 37.38317449569702                                                                                                                                                                                                                                                                
+Average Makespan: 20385.17480697688   
+
+
+
+Duplex Results:
+Low task, Low machine:                                                                                                                                                                                                                                                                         
+Average Time: 7.01032525062561                                                                                                                                                                                                                                                                 
+Average Makespan: 25374.939847001602 
+
+High Task, High Machine:                                                                                                                                                                                                                                                                       
+Average Time: 6.978838396072388                                                                                                                                                                                                                                                                
+Average Makespan: 4536.177626072703
+
+High Task, Low Machine:                                                                                                                                                                                                                                                                        
+Average Time: 6.904732580184937                                                                                                                                                                                                                                                                
+Average Makespan: 27160.344703150662
+
+Low Task, High Machine:                                                                                                                                                                                                                                                                        
+Average Time: 72.8723756980896                                                                                                                                                                                                                                                                 
+Average Makespan: 16374.995097227775 
+
+
+
+Simulated Annealing Results:
+Low task, Low machine:                                                                                                                                                                                                                                                                         
+Average Time: 1.5116208267211915                                                                                                                                                                                                                                                               
+Average Makespan: 44850.41258297846 
+
+High Task, High Machine:                                                                                                                                                                                                                                                                       
+Average Time: 1.5143445205688477                                                                                                                                                                                                                                                               
+Average Makespan: 50459.51624987851 
+
+High Task, Low Machine:                                                                                                                                                                                                                                                                        
+Average Time: 1.5092622566223144                                                                                                                                                                                                                                                               
+Average Makespan: 47113.456911203524 
+
+Low Task, High Machine:                                                                                                                                                                                                                                                                        
+Average Time: 0.7269063758850097                                                                                                                                                                                                                                                               
+Average Makespan: 101604.46469267177 
+
+
+
+Genetic Algorithm Results:
+Low task, Low machine:                                                                                                                                                                                                                                           
+Average Time: 42.44289577484131                                                                                                                                                                                                                                  
+Average Makespan: 37464.56  
+
+High Task, High Machine:                                                                                                                                                                                                                                         
+Average Time: 42.20737566947937                                                                                                                                                                                                                                  
+Average Makespan: 37056.64  
+
+High Task, Low Machine:                                                                                                                                                                                                                                          
+Average Time: 42.22536723136902                                                                                                                                                                                                                                  
+Average Makespan: 37814.12   
+
+Low Task, High Machine:                                                                                                                                                                                                                                          
+Average Time: 106.13245875358581                                                                                                                                                                                                                                 
+Average Makespan: 45800.88  
+
+
+
+A* Algorithm Results: 512 x 16
+Low task, Low machine:
+Average Time: 796.04
+Average Makespan: 248380.63784208812
+
+
+High Task, Low Machine:
+Average Time: 791.3327724933624
+Average Makespan: 262023.11142430268
+
+Low Task, High Machine:
+Average Time: 429.9530665874481
+Average Makespan: 148466.68410937398
+
+
+
+Quantum CQM Algorithm:
+512 x 16 10 seconds:
+Low task, Low machine
+Makespan: 31016.103375099177
+
+High task, High machine:
+Makespan: 9850.79737788463
+
+512 x 16 15 seconds:
+High task, Low machine:
+Makespan: 28700.12293278265
+
+20 seconds
+Low task, High machine:
+Makespan: 45336.30449022847

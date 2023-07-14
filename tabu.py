@@ -1,49 +1,56 @@
-# import necessary modules
-import random
-import math
-import numpy as np
 import time
 from ETC_Generation import *
 from Helper_funcs import *
 
+def generate_neighbors(schedule):
+    neighbors = []
+    for i in range(len(schedule)):
+        for j in range(i + 1, len(schedule)):
+            neighbor = schedule.copy()
+            neighbor[i], neighbor[j] = schedule[j], schedule[i] # Swap two tasks
+            neighbors.append(neighbor)
+    return neighbors
 
-def MCT(t, m, etc):
-    #Initialize Variables
-    need_assignment = np.linspace(0, t-1, num=t, dtype=int)
-    machine_times = np.zeros(m, dtype=int)
-    order = np.zeros(t,  dtype=int)
+def tabu_search(initial_schedule, etc, tabu_tenure, max_iterations):
+    best_schedule = initial_schedule
+    best_makespan = calculate_makespan(initial_schedule, etc)
 
-    for i in range(t):
-        #Choose arbitrary task to assign
-        assign = np.random.choice(need_assignment)
+    current_schedule = initial_schedule
+    tabu_list = []
 
-        #Find the time it would take to execute chosen task with consideration to machine times
-        task_times = machine_times + etc[assign]
+    for _ in range(max_iterations):
+        neighbors = generate_neighbors(current_schedule)
+        valid_moves = [schedule for schedule in neighbors if schedule not in tabu_list]
 
-        #Choose minimum completion time & assign
-        I = np.argmin(task_times)
-        order[assign] = I
+        if not valid_moves:
+            break # If there are no valid moves left, stop the search
 
-        #Remove assigned task from unmapped list
-        ind = np.argwhere(need_assignment==assign)
-        need_assignment = np.delete(need_assignment, ind)
+        current_schedule = min(valid_moves, key=lambda x: calculate_makespan(x, etc))
+        current_makespan = calculate_makespan(current_schedule, etc)
 
-        #Update machine times based on assignment
-        machine_times[I] = machine_times[I] + etc[assign][I]
+        if current_makespan < best_makespan:
+            best_schedule = current_schedule
+            best_makespan = current_makespan
 
-    makespan = calculate_makespan(order, etc)
-    return order, makespan
+            tabu_list.append(current_schedule)
+            if len(tabu_list) > tabu_tenure:
+                tabu_list.pop(0) # Remove the oldest move from the tabu list
 
-# Call MCT to run 100 times, gather average makespan & time
+    return best_schedule, best_makespan
+
+# Call Tabu to run 100 times, gather average makespan & time
 # Low task / Low machine heterogeneity
-t = 3200
-m = 100
+t = 5
+m = 3
+tenure = 20
+iterations = 100
 average_makespan = 0
 average_time = 0
 for i in range(25):
     etc = CVB_ETC_1(t, m, 0.1, 0.1, 1000)
     start_time = time.time()
-    order, makespan = MCT(t, m, etc)
+    initial_schedule = initial_mapping(t, m)
+    order, makespan = tabu_search(initial_schedule, etc, tenure, iterations)
     end_time = time.time()
     average_makespan = average_makespan + makespan
     time_lapsed = end_time - start_time
@@ -57,16 +64,14 @@ print("Average Time:", average_time)
 print("Average Makespan:", average_makespan)
 
 
-# Call MCT to run 100 times, gather average makespan & time
 # high task / high machine
-t = 3200
-m = 100
 average_makespan = 0
 average_time = 0
 for i in range(25):
     etc = CVB_ETC_1(t, m, 0.6, 0.6, 1000)
     start_time = time.time()
-    order, makespan = MCT(t, m, etc)
+    initial_schedule = initial_mapping(t, m)
+    order, makespan = tabu_search(initial_schedule, etc, tenure, iterations)    
     end_time = time.time()
     average_makespan = average_makespan + makespan
     time_lapsed = end_time - start_time
@@ -80,16 +85,14 @@ print("Average Time:", average_time)
 print("Average Makespan:", average_makespan)
 
 
-# Call MCT to run 100 times, gather average makespan & time
 # high task / low machine
-t = 3200
-m = 100
 average_makespan = 0
 average_time = 0
 for i in range(25):
     etc = CVB_ETC_1(t, m, 0.5, 0.1, 1000)
     start_time = time.time()
-    order, makespan = MCT(t, m, etc)
+    initial_schedule = initial_mapping(t, m)
+    order, makespan = tabu_search(initial_schedule, etc, tenure, iterations)    
     end_time = time.time()
     average_makespan = average_makespan + makespan
     time_lapsed = end_time - start_time
@@ -103,16 +106,14 @@ print("Average Time:", average_time)
 print("Average Makespan:", average_makespan)
 
 
-# Call MCT to run 100 times, gather average makespan & time
 # Low task heterogeneity high machine
-t = 3200
-m = 100
 average_makespan = 0
 average_time = 0
 for i in range(25):
     etc = CVB_ETC_2(t, m, 0.1, 0.6, 1000)
     start_time = time.time()
-    order, makespan = MCT(t, m, etc)
+    initial_schedule = initial_mapping(t, m)
+    order, makespan = tabu_search(initial_schedule, etc, tenure, iterations)    
     end_time = time.time()
     average_makespan = average_makespan + makespan
     time_lapsed = end_time - start_time
