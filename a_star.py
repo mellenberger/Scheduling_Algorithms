@@ -7,25 +7,25 @@ from Helper_funcs import *
 
 # represent a node in the A* search tree
 class Node:
-    def __init__(self, mapping, cost, makespan, remaining_tasks):
+    def __init__(self, mapping, cost, makespan, remaining_tasks, cost_so_far):
         self.mapping = mapping
         self.cost = cost
         self.makespan = makespan
         self.remaining_tasks = remaining_tasks
+        self.cost_so_far = cost_so_far
 
     # enable comparison of nodes based on their cost
     def __lt__(self, other):
         return self.cost < other.cost
-
 
 # main A* algorithm
 def a_star(etc_matrix, num_resources):
     num_tasks = len(etc_matrix)
     initial_mapping = [-1] * num_tasks
     open_list = []
-    closed_list = set()
+    visited = set()
 
-    initial_node = Node(initial_mapping, 0, 0, set(range(num_tasks)))
+    initial_node = Node(initial_mapping, 0, 0, set(range(num_tasks)), 0)
     heapq.heappush(open_list, initial_node)
 
     while open_list:
@@ -38,20 +38,31 @@ def a_star(etc_matrix, num_resources):
         current_makespan = current_node.makespan
         current_cost = current_node.cost
 
-        closed_list.add(tuple(current_mapping))
+        mapping_hash = hash(tuple(current_mapping))
+
+        if mapping_hash in visited:
+            continue
+
+        visited.add(mapping_hash)
 
         for task in current_node.remaining_tasks:
             for resource in range(num_resources):
                 new_mapping = current_mapping.copy()
                 new_mapping[task] = resource
 
-                if tuple(new_mapping) in closed_list:
-                    continue
+                new_makespan = calculate_makespan(new_mapping)
+                new_cost_so_far = current_node.cost_so_far + etc_matrix[task][resource]
+                estimated_remaining_cost = (len(current_node.remaining_tasks) - 1) * max(etc_matrix[task])
 
-                new_makespan = calculate_makespan(new_mapping, etc_matrix)
-                new_cost = new_makespan + len(current_node.remaining_tasks) - 1
+                new_cost = new_makespan + new_cost_so_far + estimated_remaining_cost
 
-                new_node = Node(new_mapping, new_cost, new_makespan, current_node.remaining_tasks - {task})
+                new_node = Node(
+                    new_mapping,
+                    new_cost,
+                    new_makespan,
+                    current_node.remaining_tasks - {task},
+                    new_cost_so_far
+                )
 
                 heapq.heappush(open_list, new_node)
 

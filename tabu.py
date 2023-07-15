@@ -1,127 +1,152 @@
-import time
-from ETC_Generation import *
-from Helper_funcs import *
+import random
 
-def generate_neighbors(schedule):
+import numpy as np
+
+import time
+
+
+
+
+def calculate_makespan(schedule, etc):
+
+    machines = [0]*len(etc[0])  # Initialize the time of each machine to 0
+
+    for task in schedule:
+
+        machine = np.argmin(machines)  # Find the machine with the shortest time
+
+        machines[machine] += etc[task][machine]  # Assign the task to this machine
+
+    return max(machines)  # The makespan is the maximum time
+
+
+
+
+def generate_neighbors(schedule, num_neighbors, etc):
+
     neighbors = []
-    for i in range(len(schedule)):
-        for j in range(i + 1, len(schedule)):
-            neighbor = schedule.copy()
-            neighbor[i], neighbor[j] = schedule[j], schedule[i] # Swap two tasks
-            neighbors.append(neighbor)
+
+    for _ in range(num_neighbors):
+
+        i, j = random.sample(range(len(schedule)), 2)  # Select two tasks randomly
+
+        neighbor = schedule.copy()
+
+        neighbor[i], neighbor[j] = schedule[j], schedule[i]  # Swap the two tasks
+
+        neighbors.append(neighbor)
+
     return neighbors
 
-def tabu_search(initial_schedule, etc, tabu_tenure, max_iterations):
+
+
+
+def tabu_search(initial_schedule, etc, max_iterations, num_neighbors):
+
     best_schedule = initial_schedule
+
     best_makespan = calculate_makespan(initial_schedule, etc)
 
+
+
+
     current_schedule = initial_schedule
+
     tabu_list = []
 
+
+
+
+    tabu_tenure = int(np.sqrt(len(initial_schedule)))  # Tabu tenure as a function of the number of tasks
+
+
+
+
     for _ in range(max_iterations):
-        neighbors = generate_neighbors(current_schedule)
+
+        neighbors = generate_neighbors(current_schedule, num_neighbors, etc)
+
         valid_moves = [schedule for schedule in neighbors if schedule not in tabu_list]
 
+
+
+
         if not valid_moves:
-            break # If there are no valid moves left, stop the search
+
+            break  # If there are no valid moves left, stop the search
+
+
+
 
         current_schedule = min(valid_moves, key=lambda x: calculate_makespan(x, etc))
+
         current_makespan = calculate_makespan(current_schedule, etc)
 
+
+
+
         if current_makespan < best_makespan:
+
             best_schedule = current_schedule
+
             best_makespan = current_makespan
 
-            tabu_list.append(current_schedule)
-            if len(tabu_list) > tabu_tenure:
-                tabu_list.pop(0) # Remove the oldest move from the tabu list
+
+
+
+        tabu_list.append(current_schedule)
+
+        if len(tabu_list) > tabu_tenure:
+
+            tabu_list.pop(0)  # Remove the oldest move from the tabu list
+
+
+
 
     return best_schedule, best_makespan
 
-# Call Tabu to run 100 times, gather average makespan & time
-# Low task / Low machine heterogeneity
-t = 5
-m = 3
-tenure = 20
-iterations = 100
-average_makespan = 0
-average_time = 0
-for i in range(25):
-    etc = CVB_ETC_1(t, m, 0.1, 0.1, 1000)
-    start_time = time.time()
-    initial_schedule = initial_mapping(t, m)
-    order, makespan = tabu_search(initial_schedule, etc, tenure, iterations)
-    end_time = time.time()
-    average_makespan = average_makespan + makespan
-    time_lapsed = end_time - start_time
-    average_time = average_time + time_lapsed
-    time_convert(time_lapsed)
-
-average_makespan = average_makespan / 25
-average_time = average_time / 25
-print("Low task, Low machine:")
-print("Average Time:", average_time)
-print("Average Makespan:", average_makespan)
 
 
-# high task / high machine
-average_makespan = 0
-average_time = 0
-for i in range(25):
-    etc = CVB_ETC_1(t, m, 0.6, 0.6, 1000)
-    start_time = time.time()
-    initial_schedule = initial_mapping(t, m)
-    order, makespan = tabu_search(initial_schedule, etc, tenure, iterations)    
-    end_time = time.time()
-    average_makespan = average_makespan + makespan
-    time_lapsed = end_time - start_time
-    average_time = average_time + time_lapsed
-    time_convert(time_lapsed)
 
-average_makespan = average_makespan / 25
-average_time = average_time / 25
-print("High Task, High Machine:")
-print("Average Time:", average_time)
-print("Average Makespan:", average_makespan)
+# Example usage:
 
 
-# high task / low machine
-average_makespan = 0
-average_time = 0
-for i in range(25):
-    etc = CVB_ETC_1(t, m, 0.5, 0.1, 1000)
-    start_time = time.time()
-    initial_schedule = initial_mapping(t, m)
-    order, makespan = tabu_search(initial_schedule, etc, tenure, iterations)    
-    end_time = time.time()
-    average_makespan = average_makespan + makespan
-    time_lapsed = end_time - start_time
-    average_time = average_time + time_lapsed
-    time_convert(time_lapsed)
-
-average_makespan = average_makespan / 25
-average_time = average_time / 25
-print("High Task, Low Machine:")
-print("Average Time:", average_time)
-print("Average Makespan:", average_makespan)
 
 
-# Low task heterogeneity high machine
-average_makespan = 0
-average_time = 0
-for i in range(25):
-    etc = CVB_ETC_2(t, m, 0.1, 0.6, 1000)
-    start_time = time.time()
-    initial_schedule = initial_mapping(t, m)
-    order, makespan = tabu_search(initial_schedule, etc, tenure, iterations)    
-    end_time = time.time()
-    average_makespan = average_makespan + makespan
-    time_lapsed = end_time - start_time
-    average_time = average_time + time_lapsed
-    time_convert(time_lapsed)
+num_tasks = 512
 
-average_makespan = average_makespan / 25
-average_time = average_time / 25
-print("Low Task, High Machine:")
-print("Average Time:", average_time)
-print("Average Makespan:", average_makespan)
+num_machines = 16
+
+etc = [[random.randint(1, 10) for _ in range(num_machines)] for _ in range(num_tasks)]  # Random 2D ETC matrix
+
+
+
+
+initial_schedule = list(range(num_tasks))  # Initial schedule is just the tasks in order
+
+random.shuffle(initial_schedule)  # Shuffle the initial schedule
+
+
+
+
+max_iterations = 100
+
+num_neighbors = 50  # Number of neighbors to generate in each iteration
+
+
+
+
+start_time = time.time()
+
+best_schedule, best_makespan = tabu_search(initial_schedule, etc, max_iterations, num_neighbors)
+
+end_time = time.time()
+
+
+
+
+print('Best Schedule:', best_schedule)
+
+print('Best Makespan:', best_makespan)
+
+print('Runtime:', end_time - start_time, 'seconds')
