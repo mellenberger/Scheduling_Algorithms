@@ -85,31 +85,31 @@ average_time += (end_time - start_time)
 print("Low task, Low machine, Consistent:")
 print("Makespan:", makespan)
 
-# High task / High machine / Inconsistent
-etc = np.loadtxt("HT_HM_Inconsistent.txt")
+# Low task / High machine / Inconsistent
+etc = np.loadtxt("LT_HM_Inconsistent.txt")
 start_time = time.time()
 order, makespan = simulated_annealing(etc,m,initial_temperature, cooling_rate, stopping_iterations)
 end_time = time.time()
 average_time += (end_time - start_time)
-print("Low task, Low machine, Inconsistent:")
+print("Low task, High machine, Inconsistent:")
 print("Makespan:", makespan)
 
-# High task / High machine / Partially consistent
-etc = np.loadtxt("HT_HM_PartiallyConsistent.txt")
+# Low task / High machine / Partially Consistent
+etc = np.loadtxt("LT_HM_PartiallyConsistent.txt")
 start_time = time.time()
 order, makespan = simulated_annealing(etc,m,initial_temperature, cooling_rate, stopping_iterations)
 end_time = time.time()
 average_time += (end_time - start_time)
-print("Low task, Low machine, Partially Consistent:")
+print("Low task, High machine, Partially Consistent:")
 print("Makespan:", makespan)
 
-# High task / High machine / Consistent
-etc = np.loadtxt("HT_HM_Consistent.txt")
+# Low task / High machine / Consistent
+etc = np.loadtxt("LT_HM_Consistent.txt")
 start_time = time.time()
 order, makespan = simulated_annealing(etc,m,initial_temperature, cooling_rate, stopping_iterations)
 end_time = time.time()
 average_time += (end_time - start_time)
-print("Low task, Low machine, Consistent:")
+print("Low task, High machine, Consistent:")
 print("Makespan:", makespan)
 
 # High task / Low machine / Inconsistent
@@ -118,7 +118,7 @@ start_time = time.time()
 order, makespan = simulated_annealing(etc,m,initial_temperature, cooling_rate, stopping_iterations)
 end_time = time.time()
 average_time += (end_time - start_time)
-print("Low task, Low machine, Inconsistent:")
+print("High task, Low machine, Inconsistent:")
 print("Makespan:", makespan)
 
 # High task / Low machine / Partially consistent
@@ -127,7 +127,7 @@ start_time = time.time()
 order, makespan = simulated_annealing(etc,m,initial_temperature, cooling_rate, stopping_iterations)
 end_time = time.time()
 average_time += (end_time - start_time)
-print("Low task, Low machine, Partially Consistent:")
+print("High task, Low machine, Partially Consistent:")
 print("Makespan:", makespan)
 
 # High task / Low machine / Consistent
@@ -136,35 +136,36 @@ start_time = time.time()
 order, makespan = simulated_annealing(etc,m,initial_temperature, cooling_rate, stopping_iterations)
 end_time = time.time()
 average_time += (end_time - start_time)
-print("Low task, Low machine, Consistent:")
+print("High task, Low machine, Consistent:")
 print("Makespan:", makespan)
 
-# Low task / High machine / Inconsistent
-etc = np.loadtxt("LT_LM_Inconsistent.txt")
+# High task / High machine / Inconsistent
+etc = np.loadtxt("HT_HM_Inconsistent.txt")
 start_time = time.time()
 order, makespan = simulated_annealing(etc,m,initial_temperature, cooling_rate, stopping_iterations)
 end_time = time.time()
 average_time += (end_time - start_time)
-print("Low task, Low machine, Inconsistent:")
+print("High task, High machine, Inconsistent:")
 print("Makespan:", makespan)
 
-# Low task / High machine / Partially Consistent
-etc = np.loadtxt("LT_LM_PartiallyConsistent.txt")
+# High task / High machine / Partially consistent
+etc = np.loadtxt("HT_HM_PartiallyConsistent.txt")
 start_time = time.time()
 order, makespan = simulated_annealing(etc,m,initial_temperature, cooling_rate, stopping_iterations)
 end_time = time.time()
 average_time += (end_time - start_time)
-print("Low task, Low machine, Partially Consistent:")
+print("High task, High machine, Partially Consistent:")
 print("Makespan:", makespan)
 
-# Low task / High machine / Consistent
-etc = np.loadtxt("LT_LM_Consistent.txt")
+# High task / High machine / Consistent
+etc = np.loadtxt("HT_HM_Consistent.txt")
 start_time = time.time()
 order, makespan = simulated_annealing(etc,m,initial_temperature, cooling_rate, stopping_iterations)
 end_time = time.time()
 average_time += (end_time - start_time)
-print("Low task, Low machine, Consistent:")
+print("High task, High machine, Consistent:")
 print("Makespan:", makespan)
+
 
 average_time = average_time / 12
 print("Average Time:", average_time)
