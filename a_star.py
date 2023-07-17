@@ -50,7 +50,7 @@ def a_star(etc_matrix, num_resources):
                 new_mapping = current_mapping.copy()
                 new_mapping[task] = resource
 
-                new_makespan = calculate_makespan(new_mapping)
+                new_makespan = calculate_makespan(new_mapping, etc_matrix)
                 new_cost_so_far = current_node.cost_so_far + etc_matrix[task][resource]
                 estimated_remaining_cost = (len(current_node.remaining_tasks) - 1) * max(etc_matrix[task])
 
@@ -69,100 +69,119 @@ def a_star(etc_matrix, num_resources):
     return None
 
 
-# Call A* to run 100 times, gather average makespan & time
-# Low task / Low machine heterogeneity
-t = 516
-m = 32
-average_makespan = 0
+# Call A* for each ETC, gather average time & each makespan
+t = 512
+m = 16
 average_time = 0
-average = 2
-for i in range(2):
-    etc = CVB_ETC_1(t, m, 0.1, 0.1, 1000)
-    start_time = time.time()
-    order, makespan = a_star(etc, m)
-    end_time = time.time()
-    average_makespan = average_makespan + makespan
-    time_lapsed = end_time - start_time
-    average_time = average_time + time_lapsed
-    time_convert(time_lapsed)
-    if order is None:
-        print("No valid mapping found.")
-        average -= 1
 
-average_makespan = average_makespan / average
-average_time = average_time / average
-print("Low task, Low machine:")
+# Low task / Low machine heterogeneity / Inconsistent
+etc = np.loadtxt("LT_LM_Inconsistent.txt")
+start_time = time.time()
+order, makespan = a_star(etc, m)
+end_time = time.time()
+average_time += (end_time - start_time)
+print("Low task, Low machine, Inconsistent:")
+print("Makespan:", makespan)
+
+# Low task / Low machine heterogeneity / Partially Consistent
+etc = np.loadtxt("LT_LM_PartiallyConsistent.txt")
+start_time = time.time()
+order, makespan = a_star(etc, m)
+end_time = time.time()
+average_time += (end_time - start_time)
+print("Low task, Low machine, Partially Consistent:")
+print("Makespan:", makespan)
+
+# Low task / Low machine heterogeneity / Consistent
+etc = np.loadtxt("LT_LM_Consistent.txt")
+start_time = time.time()
+order, makespan = a_star(etc, m)
+end_time = time.time()
+average_time += (end_time - start_time)
+print("Low task, Low machine, Consistent:")
+print("Makespan:", makespan)
+
+# Low task / High machine heterogeneity / Inconsistent
+etc = np.loadtxt("LT_HM_Inconsistent.txt")
+start_time = time.time()
+order, makespan = a_star(etc, m)
+end_time = time.time()
+average_time += (end_time - start_time)
+print("Low task, High machine, Inconsistent:")
+print("Makespan:", makespan)
+
+# Low task / High machine heterogeneity / Partially Consistent
+etc = np.loadtxt("LT_HM_PartiallyConsistent.txt")
+start_time = time.time()
+order, makespan = a_star(etc, m)
+end_time = time.time()
+average_time += (end_time - start_time)
+print("Low task, High machine, Partially Consistent:")
+print("Makespan:", makespan)
+
+# Low task / High machine heterogeneity / Consistent
+etc = np.loadtxt("LT_HM_Consistent.txt")
+start_time = time.time()
+order, makespan = a_star(etc, m)
+end_time = time.time()
+average_time += (end_time - start_time)
+print("Low task, High machine, Consistent:")
+print("Makespan:", makespan)
+
+# High task / Low machine heterogeneity / Inconsistent
+etc = np.loadtxt("HT_LM_Inconsistent.txt")
+start_time = time.time()
+order, makespan = a_star(etc, m)
+end_time = time.time()
+average_time += (end_time - start_time)
+print("High task, Low machine, Inconsistent:")
+print("Makespan:", makespan)
+
+# High task / Low machine heterogeneity / Partially Consistent
+etc = np.loadtxt("HT_LM_PartiallyConsistent.txt")
+start_time = time.time()
+order, makespan = a_star(etc, m)
+end_time = time.time()
+average_time += (end_time - start_time)
+print("High task, Low machine, Partially Consistent:")
+print("Makespan:", makespan)
+
+# High task / Low machine heterogeneity / Consistent
+etc = np.loadtxt("HT_LM_Consistent.txt")
+start_time = time.time()
+order, makespan = a_star(etc, m)
+end_time = time.time()
+average_time += (end_time - start_time)
+print("High task, Low machine, Consistent:")
+print("Makespan:", makespan)
+
+# High task / High machine heterogeneity / Inconsistent
+etc = np.loadtxt("HT_HM_Inconsistent.txt")
+start_time = time.time()
+order, makespan = a_star(etc, m)
+end_time = time.time()
+average_time += (end_time - start_time)
+print("High task, High machine, Inconsistent:")
+print("Makespan:", makespan)
+
+# High task / High machine heterogeneity / Partially Consistent
+etc = np.loadtxt("HT_HM_PartiallyConsistent.txt")
+start_time = time.time()
+order, makespan = a_star(etc, m)
+end_time = time.time()
+average_time += (end_time - start_time)
+print("High task, High machine, Partially Consistent:")
+print("Makespan:", makespan)
+
+# High task / High machine heterogeneity / Consistent
+etc = np.loadtxt("HT_HM_Consistent.txt")
+start_time = time.time()
+order, makespan = a_star(etc, m)
+end_time = time.time()
+average_time += (end_time - start_time)
+print("High task, High machine, Consistent:")
+print("Makespan:", makespan)
+
+average_time = average_time / 12
 print("Average Time:", average_time)
-print("Average Makespan:", average_makespan)
 
-
-# high task / high machine
-average_makespan = 0
-average_time = 0
-average = 2
-for i in range(2):
-    etc = CVB_ETC_1(t, m, 0.6, 0.6, 1000)
-    start_time = time.time()
-    order, makespan = a_star(etc, m)
-    end_time = time.time()
-    average_makespan = average_makespan + makespan
-    time_lapsed = end_time - start_time
-    average_time = average_time + time_lapsed
-    time_convert(time_lapsed)
-    if order is None:
-        print("No valid mapping found.")
-        average -= 1
-
-average_makespan = average_makespan / average
-average_time = average_time / average
-print("High Task, High Machine:")
-print("Average Time:", average_time)
-print("Average Makespan:", average_makespan)
-
-
-# high task / low machine
-average_makespan = 0
-average_time = 0
-average = 2
-for i in range(2):
-    etc = CVB_ETC_1(t, m, 0.5, 0.1, 1000)
-    start_time = time.time()
-    order, makespan = a_star(etc, m)
-    end_time = time.time()
-    average_makespan = average_makespan + makespan
-    time_lapsed = end_time - start_time
-    average_time = average_time + time_lapsed
-    time_convert(time_lapsed)
-    if order is None:
-        print("No valid mapping found.")
-        average -= 1
-
-average_makespan = average_makespan / average
-average_time = average_time / average
-print("High Task, Low Machine:")
-print("Average Time:", average_time)
-print("Average Makespan:", average_makespan)
-
-
-# Low task heterogeneity high machine
-average_makespan = 0
-average_time = 0
-average = 2
-for i in range(2):
-    etc = CVB_ETC_2(t, m, 0.1, 0.6, 1000)
-    start_time = time.time()
-    order, makespan = a_star(etc, m)
-    end_time = time.time()
-    average_makespan = average_makespan + makespan
-    time_lapsed = end_time - start_time
-    average_time = average_time + time_lapsed
-    time_convert(time_lapsed)
-    if order is None:
-        print("No valid mapping found.")
-        average -= 1
-
-average_makespan = average_makespan / average
-average_time = average_time / average
-print("Low Task, High Machine:")
-print("Average Time:", average_time)
-print("Average Makespan:", average_makespan)

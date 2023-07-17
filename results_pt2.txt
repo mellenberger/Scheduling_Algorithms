@@ -1,0 +1,27 @@
+Genetic Algorithm:
+
+Low task, Low machine, Inconsistent:
+Makespan: 34509
+Low task, Low machine, Partially Consistent:
+Makespan: 33109
+Low task, Low machine, Consistent:
+Makespan: 33840
+Low task, High machine, Inconsistent:
+Makespan: 23469
+Low task, High machine, Partially Consistent:
+Makespan: 24025
+Low task, High machine, Consistent:
+Makespan: 23570
+High task, Low machine, Inconsistent:
+Makespan: 33832
+High task, Low machine, Partially Consistent:
+Makespan: 32809
+High task, Low machine, Consistent:
+Makespan: 32974
+High task, High machine, Inconsistent:
+Makespan: 26041
+High task, High machine, Partially Consistent:
+Makespan: 26162
+High task, High machine, Consistent:
+Makespan: 25363
+Average Time: 6.840753773848216
