@@ -32,12 +32,12 @@ def OLB(t, m, etc):
     return order, makespan
 
 # Call OLB for each ETC, gather average time & each makespan
-t = 512
-m = 16
+t = 1000000
+m = 256
 average_time = 0
 
 # Low task / Low machine heterogeneity / Inconsistent
-etc = np.loadtxt("LT_LM_Inconsistent.txt")
+etc = np.loadtxt("ETC_Matrices\LT_LM_Inconsistent.txt")
 start_time = time.time()
 order, makespan = OLB(t, m, etc)
 end_time = time.time()
@@ -46,7 +46,7 @@ print("Low task, Low machine, Inconsistent:")
 print("Makespan:", makespan)
 
 # Low task / Low machine heterogeneity / Partially Consistent
-etc = np.loadtxt("LT_LM_PartiallyConsistent.txt")
+etc = np.loadtxt("ETC_Matrices\LT_LM_PartiallyConsistent.txt")
 start_time = time.time()
 order, makespan = OLB(t, m, etc)
 end_time = time.time()
@@ -55,7 +55,7 @@ print("Low task, Low machine, Partially Consistent:")
 print("Makespan:", makespan)
 
 # Low task / Low machine heterogeneity / Consistent
-etc = np.loadtxt("LT_LM_Consistent.txt")
+etc = np.loadtxt("ETC_Matrices\LT_LM_Consistent.txt")
 start_time = time.time()
 order, makespan = OLB(t, m, etc)
 end_time = time.time()
@@ -64,7 +64,7 @@ print("Low task, Low machine, Consistent:")
 print("Makespan:", makespan)
 
 # Low task / High machine heterogeneity / Inconsistent
-etc = np.loadtxt("LT_HM_Inconsistent.txt")
+etc = np.loadtxt("ETC_Matrices\LT_HM_Inconsistent.txt")
 start_time = time.time()
 order, makespan = OLB(t, m, etc)
 end_time = time.time()
@@ -73,7 +73,7 @@ print("Low task, High machine, Inconsistent:")
 print("Makespan:", makespan)
 
 # Low task / High machine heterogeneity / Partially Consistent
-etc = np.loadtxt("LT_HM_PartiallyConsistent.txt")
+etc = np.loadtxt("ETC_Matrices\LT_HM_PartiallyConsistent.txt")
 start_time = time.time()
 order, makespan = OLB(t, m, etc)
 end_time = time.time()
@@ -82,7 +82,7 @@ print("Low task, High machine, Partially Consistent:")
 print("Makespan:", makespan)
 
 # Low task / High machine heterogeneity / Consistent
-etc = np.loadtxt("LT_HM_Consistent.txt")
+etc = np.loadtxt("ETC_Matrices\LT_HM_Consistent.txt")
 start_time = time.time()
 order, makespan = OLB(t, m, etc)
 end_time = time.time()
@@ -91,7 +91,7 @@ print("Low task, High machine, Consistent:")
 print("Makespan:", makespan)
 
 # High task / Low machine heterogeneity / Inconsistent
-etc = np.loadtxt("HT_LM_Inconsistent.txt")
+etc = np.loadtxt("ETC_Matrices\HT_LM_Inconsistent.txt")
 start_time = time.time()
 order, makespan = OLB(t, m, etc)
 end_time = time.time()
@@ -100,7 +100,7 @@ print("High task, Low machine, Inconsistent:")
 print("Makespan:", makespan)
 
 # High task / Low machine heterogeneity / Partially Consistent
-etc = np.loadtxt("HT_LM_PartiallyConsistent.txt")
+etc = np.loadtxt("ETC_Matrices\HT_LM_PartiallyConsistent.txt")
 start_time = time.time()
 order, makespan = OLB(t, m, etc)
 end_time = time.time()
@@ -109,7 +109,7 @@ print("High task, Low machine, Partially Consistent:")
 print("Makespan:", makespan)
 
 # High task / Low machine heterogeneity / Consistent
-etc = np.loadtxt("HT_LM_Consistent.txt")
+etc = np.loadtxt("ETC_Matrices\HT_LM_Consistent.txt")
 start_time = time.time()
 order, makespan = OLB(t, m, etc)
 end_time = time.time()
@@ -118,7 +118,7 @@ print("High task, Low machine, Consistent:")
 print("Makespan:", makespan)
 
 # High task / High machine heterogeneity / Inconsistent
-etc = np.loadtxt("HT_HM_Inconsistent.txt")
+etc = np.loadtxt("ETC_Matrices\HT_HM_Inconsistent.txt")
 start_time = time.time()
 order, makespan = OLB(t, m, etc)
 end_time = time.time()
@@ -127,7 +127,7 @@ print("High task, High machine, Inconsistent:")
 print("Makespan:", makespan)
 
 # High task / High machine heterogeneity / Partially Consistent
-etc = np.loadtxt("HT_HM_PartiallyConsistent.txt")
+etc = np.loadtxt("ETC_Matrices\HT_HM_PartiallyConsistent.txt")
 start_time = time.time()
 order, makespan = OLB(t, m, etc)
 end_time = time.time()
@@ -136,7 +136,7 @@ print("High task, High machine, Partially Consistent:")
 print("Makespan:", makespan)
 
 # High task / High machine heterogeneity / Consistent
-etc = np.loadtxt("HT_HM_Consistent.txt")
+etc = np.loadtxt("ETC_Matrices\HT_HM_Consistent.txt")
 start_time = time.time()
 order, makespan = OLB(t, m, etc)
 end_time = time.time()

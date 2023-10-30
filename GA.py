@@ -70,8 +70,8 @@ def GA(numTasks, numMachines, etcMatrix):
 
 
 # Call GA for each ETC, gather average time & each makespan
-t = 512
-m = 16
+t = 1000000
+m = 256
 average_time = 0
 
 # Low task / Low machine heterogeneity / Inconsistent

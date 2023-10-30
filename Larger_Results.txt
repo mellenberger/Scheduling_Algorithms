@@ -1,0 +1,26 @@
+$ python OLB.py
+Low task, Low machine, Inconsistent:
+Makespan: 3906349.231183892
+Low task, Low machine, Partially Consistent:
+Makespan: 3887891.710952963
+Low task, Low machine, Consistent:
+Makespan: 3867932.1493987804
+Low task, High machine, Inconsistent:
+Makespan: 2400537.6724127904
+Low task, High machine, Partially Consistent:
+Makespan: 2448438.0276554557
+Low task, High machine, Consistent:
+Makespan: 2595344.9824781097
+High task, Low machine, Inconsistent:
+Makespan: 3906836.761790498
+High task, Low machine, Partially Consistent:
+Makespan: 3888278.8890229934
+High task, Low machine, Consistent:
+Makespan: 3870032.3125847643
+High task, High machine, Inconsistent:
+Makespan: 3914511.5891412753
+High task, High machine, Partially Consistent:
+Makespan: 3109638.172065625
+High task, High machine, Consistent:
+Makespan: 2561265.544632935
+Average Time: 311.30700957775116
