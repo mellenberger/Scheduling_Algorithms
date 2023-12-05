@@ -76,6 +76,12 @@ def CVB_ETC_2(t,m,vtask,vmach, umach, file_name, consistency):
         btask.append(p[j] / atask)
         for i in range (t):
             e[i][j] = round(random.gammavariate(atask,btask[j]))
+ 
+    # Add deadlines for each task
+    d = np.zeros((t,1))
+    for i in range(t):
+        d[i] = random.randrange(min(e[i]), max(e[i]))
+    e = np.hstack((e,d))
 
     if consistency == 'consistent':
         #Consistent

@@ -33,8 +33,8 @@ etc = CVB_ETC_2(tasks, machines, 0.1, 0.6, 1000)
 ## Coeffecient-of-Variation Based (CVB) ETC
 # Low task / low machine; high task / low machine; high task / high machine;
 
-tasks = 512
-machines = 16
+tasks = 16
+machines = 5
 etc = np.zeros((tasks, machines))
 q = [0] * tasks
 Bmach = [0] * tasks
@@ -51,7 +51,15 @@ for i in range(tasks):
     for j in range(machines):        
         etc[i][j] = gamma.rvs(sigma_mach, scale=Bmach[i])
 
+# Add deadlines for each task
+deadlines = np.zeros(tasks)
+for i in range(tasks):
+    deadlines[i] = random.uniform(min(etc[i]), max(etc[i]))
+
 np.savetxt('etc_LH_1.txt', etc)
+
+#load etc
+etc = np.loadtxt("deadline_matrices/LT_LM_Inconsistent.txt")
 
 y = [Real(f'runtime_{j}') for j in range((machines))]
 x = [[Binary(f'T{i}_M{j}') for j in range((machines))]
@@ -80,11 +88,15 @@ cqm.set_objective(objf)
 for i in range((tasks)):
     cqm.add_constraint(sum(x[i]) == 1, label=f'task_placing_{i}')
 
+#Must adhere to deadline
+for i in range((tasks)):
+    cqm.add_constraint(sum(etc[i]*x[i]) <= deadlines[i], label=f'task_deadline_{i}')
+
 print(cqm)
 
 sampler = LeapHybridCQMSampler()     
 
-sampleset = sampler.sample_cqm(cqm, time_limit = 20, label="Scheduling-LH1")  
+sampleset = sampler.sample_cqm(cqm, time_limit = 5, label="SchedulingDeadlines")  
 feasible_sampleset = sampleset.filter(lambda row: row.is_feasible)  
 if len(feasible_sampleset):      
    best = feasible_sampleset.first
@@ -93,5 +105,5 @@ if len(feasible_sampleset):
 
 scheduled_task = [key for key, val in best.sample.items() if 'T' in key and val]   
 print("{} tasks are scheduled.".format(len(scheduled_task)))     
-makespans = {key: val for key, val in best.sample.items() if 'runtime' in key and val}
-print("Makespan:", makespans[max(makespans)])
+makespans = [val for key, val in best.sample.items() if 'runtime' in key and val]
+print("Makespan:", max(makespans))
