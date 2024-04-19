@@ -23,7 +23,7 @@ def max_min(t, m, etc):
         assign_max = np.argwhere(minimum_times==minimum_times[need_assignment].max())
 
         #Find index for task & machine for chosen assignment & assign
-        index = np.argwhere(task_times==minimum_times[assign_max])
+        index = np.argwhere(task_times==minimum_times[assign_max[0]])
         task = index[0][0]
         machine = index[0][1]
         order[task] = machine

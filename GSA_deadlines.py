@@ -1,46 +1,109 @@
-# import necessary modules
 import random
 import math
 import numpy as np
+import time
 from ETC_Generation import *
 from Helper_funcs import *
-import time
 
+# Genetic Algorithm parameters
+populationSize = 100
+numGenerations = 1500
+mutationRate = 0.01
+tournamentSize = 5
 
-#Initialize Variables
-def OLB(t, m, etc, deadlines):
-    need_assignment = np.linspace(0, t-1, num=t, dtype=int)
-    machine_times = np.zeros(m, dtype=int)
-    order = np.zeros(t,  dtype=int)
+# Simulated Annealing parameters
+initial_temperature = 1000000
+cooling_rate = 0.99
+stopping_iterations = 10000
 
-    for i in range(t):
-        #Choose arbitrary task to assign
-        assign = np.random.choice(need_assignment)
+# Calculate makespan for a given mapping
+def calculate_makespan(mapping, etc_matrix):
+    num_resources = len(np.unique(mapping))
+    machine_times = np.zeros(num_resources)
 
-        #Find machine that will be avaible soonest & assign task to that machine
-        I = np.argmin(machine_times)
-        K = 2
-        while etc[assign][I] > deadlines[assign]:
-            res = np.argsort(machine_times)[:K]
-            I = res[K-1]
-            K+=1
+    for task, resource in enumerate(mapping):
+        machine_times[resource] += etc_matrix[task][resource]
 
-        order[assign] = I
+    return np.max(machine_times)
 
-        #Remove assigned task from unmapped task list
-        ind = np.argwhere(need_assignment==assign)
-        need_assignment = np.delete(need_assignment, ind)
+# Define the fitness function
+def fitness_function(chromosome, etcMatrix, deadlines):
+    machineTimes = np.zeros(len(etcMatrix[0]))
+    missed_deadlines = 0
+    deadline_penalty = 10000
+    for i in range(len(etcMatrix)):
+        machine = chromosome[i]
+        task = i
+        machineTimes[machine] += etcMatrix[task][machine]
+        if etcMatrix[task][machine] > deadlines[i]:
+            missed_deadlines += 1
+    return np.max(machineTimes) + missed_deadlines * deadline_penalty
 
-        #Update machine time availability
-        machine_times[I] = machine_times[I] + etc[assign][I]
+def acceptance_probability(current_makespan, new_makespan, temperature):
+    if new_makespan < current_makespan:
+        return 1.0
+    else:
+        return 1 / (1 + math.exp((current_makespan - new_makespan) / temperature))
 
-    makespan = calculate_makespan(order, etc)
-    return order, makespan
+def GSA(etc_matrix, num_resources, deadlines):
+    num_tasks = len(etc_matrix)
+    population = np.zeros((populationSize, num_tasks), dtype=int)
 
-# Call OLB for each ETC, gather average time & each makespan
+    # Initialize population
+    for i in range(populationSize):
+        population[i] = initial_mapping_deadlines(num_tasks, num_resources,etc_matrix,deadlines)
+
+    temperature = initial_temperature
+    unchanged_iterations = 0
+    current_mapping = initial_mapping_deadlines(num_tasks, num_resources, etc_matrix, deadlines)
+    best_mapping = current_mapping.copy()
+    current_makespan = fitness_function(current_mapping, etc_matrix,deadlines)
+    best_makespan = current_makespan
+    new_population = population.copy()
+
+    for gen in range(numGenerations):
+        for i in range(populationSize):
+            random_task = random.randint(0, num_tasks - 1)
+            new_resource = random.randint(0, num_resources - 1)
+            while etc_matrix[random_task][new_resource] > deadlines[random_task]:
+                random_task = random.randint(0, num_tasks - 1)
+                new_resource = random.randint(0, num_resources - 1)
+            new_population[i][random_task] = new_resource
+
+        # Mutation
+        for i in range(populationSize):
+            for j in range(num_tasks):
+                if random.random() < mutationRate:
+                    new_resource = random.randint(0,num_resources-1)
+                    while etc[j][new_resource] > deadlines[j]:
+                        new_resource = random.randint(0,num_resources-1)
+                    new_population[i][j] = new_resource
+
+        for i in range(populationSize):
+            new_mapping = new_population[i]
+            new_makespan = fitness_function(new_mapping, etc_matrix,deadlines)
+
+            if new_makespan < best_makespan:
+                best_mapping = new_mapping
+                best_makespan = new_makespan
+                unchanged_iterations = 0
+            else:
+                unchanged_iterations += 1
+                if acceptance_probability(current_makespan, new_makespan, temperature) < random.random():
+                    current_mapping = new_mapping
+                    current_makespan = new_makespan
+                    unchanged_iterations = 0
+
+        temperature *= cooling_rate
+
+    return best_mapping, best_makespan
+
+# Call GSA for each ETC, gather average makespan & time
 t = 1000
 m = 32
+num_resources = m
 average_time = 0
+
 
 # Low task / Low machine heterogeneity / Inconsistent
 with open('largerDeadline_matrices/LT_LM_Inconsistent.txt', 'r') as file:
@@ -49,7 +112,7 @@ with open('largerDeadline_matrices/LT_LM_Inconsistent.txt', 'r') as file:
     deadlines = [float(line.split()[-1]) for line in lines]
 
 start_time = time.time()
-order, makespan = OLB(t, m, etc, deadlines)
+order, makespan = GSA(etc, num_resources, deadlines)
 end_time = time.time()
 average_time += (end_time - start_time)
 print("Low task, Low machine, Inconsistent:")
@@ -70,7 +133,7 @@ with open('largerDeadline_matrices/LT_LM_PartiallyConsistent.txt', 'r') as file:
     deadlines = [float(line.split()[-1]) for line in lines]
 
 start_time = time.time()
-order, makespan = OLB(t, m, etc, deadlines)
+order, makespan = GSA(etc, num_resources, deadlines)
 end_time = time.time()
 average_time += (end_time - start_time)
 print("Low task, Low machine, Partially Consistent:")
@@ -91,7 +154,7 @@ with open('largerDeadline_matrices/LT_LM_Consistent.txt', 'r') as file:
     deadlines = [float(line.split()[-1]) for line in lines]
 
 start_time = time.time()
-order, makespan = OLB(t, m, etc, deadlines)
+order, makespan = GSA(etc, num_resources, deadlines)
 end_time = time.time()
 average_time += (end_time - start_time)
 print("Low task, Low machine, Consistent:")
@@ -112,7 +175,7 @@ with open('largerDeadline_matrices/LT_HM_Inconsistent.txt', 'r') as file:
     deadlines = [float(line.split()[-1]) for line in lines]
 
 start_time = time.time()
-order, makespan = OLB(t, m, etc, deadlines)
+order, makespan = GSA(etc, num_resources, deadlines)
 end_time = time.time()
 average_time += (end_time - start_time)
 print("Low task, High machine, Inconsistent:")
@@ -133,7 +196,7 @@ with open('largerDeadline_matrices/LT_HM_PartiallyConsistent.txt', 'r') as file:
     deadlines = [float(line.split()[-1]) for line in lines]
 
 start_time = time.time()
-order, makespan = OLB(t, m, etc, deadlines)
+order, makespan = GSA(etc, num_resources, deadlines)
 end_time = time.time()
 average_time += (end_time - start_time)
 print("Low task, High machine, Partially Consistent:")
@@ -154,7 +217,7 @@ with open('largerDeadline_matrices/LT_HM_Consistent.txt', 'r') as file:
     deadlines = [float(line.split()[-1]) for line in lines]
 
 start_time = time.time()
-order, makespan = OLB(t, m, etc, deadlines)
+order, makespan = GSA(etc, num_resources, deadlines)
 end_time = time.time()
 average_time += (end_time - start_time)
 print("Low task, High machine, Consistent:")
@@ -175,7 +238,7 @@ with open('largerDeadline_matrices/HT_LM_Inconsistent.txt', 'r') as file:
     deadlines = [float(line.split()[-1]) for line in lines]
 
 start_time = time.time()
-order, makespan = OLB(t, m, etc, deadlines)
+order, makespan = GSA(etc, num_resources, deadlines)
 end_time = time.time()
 average_time += (end_time - start_time)
 print("High task, Low machine, Inconsistent:")
@@ -196,7 +259,7 @@ with open('largerDeadline_matrices/HT_LM_PartiallyConsistent.txt', 'r') as file:
     deadlines = [float(line.split()[-1]) for line in lines]
 
 start_time = time.time()
-order, makespan = OLB(t, m, etc, deadlines)
+order, makespan = GSA(etc, num_resources, deadlines)
 end_time = time.time()
 average_time += (end_time - start_time)
 print("High task, Low machine, Partially Consistent:")
@@ -217,7 +280,7 @@ with open('largerDeadline_matrices/HT_LM_Consistent.txt', 'r') as file:
     deadlines = [float(line.split()[-1]) for line in lines]
 
 start_time = time.time()
-order, makespan = OLB(t, m, etc, deadlines)
+order, makespan = GSA(etc, num_resources, deadlines)
 end_time = time.time()
 average_time += (end_time - start_time)
 print("High task, Low machine, Consistent:")
@@ -238,7 +301,7 @@ with open('largerDeadline_matrices/HT_HM_Inconsistent.txt', 'r') as file:
     deadlines = [float(line.split()[-1]) for line in lines]
 
 start_time = time.time()
-order, makespan = OLB(t, m, etc, deadlines)
+order, makespan = GSA(etc, num_resources, deadlines)
 end_time = time.time()
 average_time += (end_time - start_time)
 print("High task, High machine, Inconsistent:")
@@ -259,7 +322,7 @@ with open('largerDeadline_matrices/HT_HM_PartiallyConsistent.txt', 'r') as file:
     deadlines = [float(line.split()[-1]) for line in lines]
 
 start_time = time.time()
-order, makespan = OLB(t, m, etc, deadlines)
+order, makespan = GSA(etc, num_resources, deadlines)
 end_time = time.time()
 average_time += (end_time - start_time)
 print("High task, High machine, Partially Consistent:")
@@ -280,7 +343,7 @@ with open('largerDeadline_matrices/HT_HM_Consistent.txt', 'r') as file:
     deadlines = [float(line.split()[-1]) for line in lines]
 
 start_time = time.time()
-order, makespan = OLB(t, m, etc, deadlines)
+order, makespan = GSA(etc, num_resources, deadlines)
 end_time = time.time()
 average_time += (end_time - start_time)
 print("High task, High machine, Consistent:")

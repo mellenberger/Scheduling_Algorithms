@@ -1,4 +1,8 @@
 import random
+import numpy as np
+from matplotlib import pyplot as plt
+import scipy.stats as stats 
+
 
 def CVB_ETC_1(t, m, vtask, vmach, utask, file_name, consistency):
     # Low task / low machine; high task / low machine; high task / high machine;
@@ -15,6 +19,14 @@ def CVB_ETC_1(t, m, vtask, vmach, utask, file_name, consistency):
         bmach.append(q[i] / amach)
         for j in range(m):
             e[i][j] = round(random.gammavariate(amach, bmach[i]))
+            print(amach, bmach[i])
+        x = np.linspace (0, 20, 200) 
+        y1 = stats.gamma.pdf(x, a=amach, scale=1/bmach[i])
+        plt.plot(x, y1, "y-", label=(r'$\alpha=amach, \beta=bmach[i]$'), color='black') 
+        plt.ylim([0,0.5])
+        plt.xlim([2,18])
+        plt.title("α = " + str(round(amach)) +", "+ "β = " + str(round(bmach[i])))
+        plt.show()
     
     if consistency == 'consistent':
         #Consistent

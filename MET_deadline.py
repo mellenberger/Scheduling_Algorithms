@@ -2,42 +2,41 @@
 import random
 import math
 import numpy as np
+import time
 from ETC_Generation import *
 from Helper_funcs import *
-import time
 
 
-#Initialize Variables
-def OLB(t, m, etc, deadlines):
+def MET(t, m, etc, deadlines):
+    #Initialize Variables
     need_assignment = np.linspace(0, t-1, num=t, dtype=int)
-    machine_times = np.zeros(m, dtype=int)
     order = np.zeros(t,  dtype=int)
 
     for i in range(t):
         #Choose arbitrary task to assign
         assign = np.random.choice(need_assignment)
 
-        #Find machine that will be avaible soonest & assign task to that machine
-        I = np.argmin(machine_times)
+        #Find machine with minimum execution time for chosen task
+        I = np.argmin(etc[assign])
+
+        #Adhere to deadlines / shouldn't ever go into this loop for MET, but for a double check
         K = 2
         while etc[assign][I] > deadlines[assign]:
-            res = np.argsort(machine_times)[:K]
+            res = np.argsort(etc[assign])[:K]
             I = res[K-1]
             K+=1
 
         order[assign] = I
 
-        #Remove assigned task from unmapped task list
+        #Remove assigned task from unmapped list
         ind = np.argwhere(need_assignment==assign)
         need_assignment = np.delete(need_assignment, ind)
-
-        #Update machine time availability
-        machine_times[I] = machine_times[I] + etc[assign][I]
 
     makespan = calculate_makespan(order, etc)
     return order, makespan
 
-# Call OLB for each ETC, gather average time & each makespan
+
+# Call MET for each ETC, gather average time & each makespan
 t = 1000
 m = 32
 average_time = 0
@@ -49,7 +48,7 @@ with open('largerDeadline_matrices/LT_LM_Inconsistent.txt', 'r') as file:
     deadlines = [float(line.split()[-1]) for line in lines]
 
 start_time = time.time()
-order, makespan = OLB(t, m, etc, deadlines)
+order, makespan = MET(t, m, etc, deadlines)
 end_time = time.time()
 average_time += (end_time - start_time)
 print("Low task, Low machine, Inconsistent:")
@@ -70,7 +69,7 @@ with open('largerDeadline_matrices/LT_LM_PartiallyConsistent.txt', 'r') as file:
     deadlines = [float(line.split()[-1]) for line in lines]
 
 start_time = time.time()
-order, makespan = OLB(t, m, etc, deadlines)
+order, makespan = MET(t, m, etc, deadlines)
 end_time = time.time()
 average_time += (end_time - start_time)
 print("Low task, Low machine, Partially Consistent:")
@@ -91,7 +90,7 @@ with open('largerDeadline_matrices/LT_LM_Consistent.txt', 'r') as file:
     deadlines = [float(line.split()[-1]) for line in lines]
 
 start_time = time.time()
-order, makespan = OLB(t, m, etc, deadlines)
+order, makespan = MET(t, m, etc, deadlines)
 end_time = time.time()
 average_time += (end_time - start_time)
 print("Low task, Low machine, Consistent:")
@@ -112,7 +111,7 @@ with open('largerDeadline_matrices/LT_HM_Inconsistent.txt', 'r') as file:
     deadlines = [float(line.split()[-1]) for line in lines]
 
 start_time = time.time()
-order, makespan = OLB(t, m, etc, deadlines)
+order, makespan = MET(t, m, etc, deadlines)
 end_time = time.time()
 average_time += (end_time - start_time)
 print("Low task, High machine, Inconsistent:")
@@ -133,7 +132,7 @@ with open('largerDeadline_matrices/LT_HM_PartiallyConsistent.txt', 'r') as file:
     deadlines = [float(line.split()[-1]) for line in lines]
 
 start_time = time.time()
-order, makespan = OLB(t, m, etc, deadlines)
+order, makespan = MET(t, m, etc, deadlines)
 end_time = time.time()
 average_time += (end_time - start_time)
 print("Low task, High machine, Partially Consistent:")
@@ -154,7 +153,7 @@ with open('largerDeadline_matrices/LT_HM_Consistent.txt', 'r') as file:
     deadlines = [float(line.split()[-1]) for line in lines]
 
 start_time = time.time()
-order, makespan = OLB(t, m, etc, deadlines)
+order, makespan = MET(t, m, etc, deadlines)
 end_time = time.time()
 average_time += (end_time - start_time)
 print("Low task, High machine, Consistent:")
@@ -175,7 +174,7 @@ with open('largerDeadline_matrices/HT_LM_Inconsistent.txt', 'r') as file:
     deadlines = [float(line.split()[-1]) for line in lines]
 
 start_time = time.time()
-order, makespan = OLB(t, m, etc, deadlines)
+order, makespan = MET(t, m, etc, deadlines)
 end_time = time.time()
 average_time += (end_time - start_time)
 print("High task, Low machine, Inconsistent:")
@@ -196,7 +195,7 @@ with open('largerDeadline_matrices/HT_LM_PartiallyConsistent.txt', 'r') as file:
     deadlines = [float(line.split()[-1]) for line in lines]
 
 start_time = time.time()
-order, makespan = OLB(t, m, etc, deadlines)
+order, makespan = MET(t, m, etc, deadlines)
 end_time = time.time()
 average_time += (end_time - start_time)
 print("High task, Low machine, Partially Consistent:")
@@ -217,7 +216,7 @@ with open('largerDeadline_matrices/HT_LM_Consistent.txt', 'r') as file:
     deadlines = [float(line.split()[-1]) for line in lines]
 
 start_time = time.time()
-order, makespan = OLB(t, m, etc, deadlines)
+order, makespan = MET(t, m, etc, deadlines)
 end_time = time.time()
 average_time += (end_time - start_time)
 print("High task, Low machine, Consistent:")
@@ -238,7 +237,7 @@ with open('largerDeadline_matrices/HT_HM_Inconsistent.txt', 'r') as file:
     deadlines = [float(line.split()[-1]) for line in lines]
 
 start_time = time.time()
-order, makespan = OLB(t, m, etc, deadlines)
+order, makespan = MET(t, m, etc, deadlines)
 end_time = time.time()
 average_time += (end_time - start_time)
 print("High task, High machine, Inconsistent:")
@@ -259,7 +258,7 @@ with open('largerDeadline_matrices/HT_HM_PartiallyConsistent.txt', 'r') as file:
     deadlines = [float(line.split()[-1]) for line in lines]
 
 start_time = time.time()
-order, makespan = OLB(t, m, etc, deadlines)
+order, makespan = MET(t, m, etc, deadlines)
 end_time = time.time()
 average_time += (end_time - start_time)
 print("High task, High machine, Partially Consistent:")
@@ -280,7 +279,7 @@ with open('largerDeadline_matrices/HT_HM_Consistent.txt', 'r') as file:
     deadlines = [float(line.split()[-1]) for line in lines]
 
 start_time = time.time()
-order, makespan = OLB(t, m, etc, deadlines)
+order, makespan = MET(t, m, etc, deadlines)
 end_time = time.time()
 average_time += (end_time - start_time)
 print("High task, High machine, Consistent:")

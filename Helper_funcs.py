@@ -22,3 +22,13 @@ def calculate_makespan(mapping, etc_matrix):
 # generate initial random mapping of tasks to resources
 def initial_mapping(num_tasks, num_resources):
     return [random.randint(0, num_resources - 1) for _ in range(num_tasks)]
+
+# generate initial random mapping of tasks to resources
+def initial_mapping_deadlines(num_tasks, num_resources, etc, deadlines):
+    mapping = [random.randint(0, num_resources - 1) for _ in range(num_tasks)]
+    for i in range(num_tasks):
+        machine = mapping[i]
+        while etc[i][machine] > deadlines[i]:
+            machine = random.randint(0, num_resources - 1)
+        mapping[i] = machine
+    return mapping

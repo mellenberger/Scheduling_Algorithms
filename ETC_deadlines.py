@@ -15,13 +15,13 @@ def CVB_ETC_1(t, m, vtask, vmach, utask, file_name, consistency):
         q.append(random.gammavariate(atask, btask))
         bmach.append(q[i] / amach)
         for j in range(m):
-            e[i][j] = round(random.gammavariate(amach, bmach[i]))
+            e[i][j] = (random.gammavariate(amach, bmach[i]))
     
             
     # Add deadlines for each task
     d = np.zeros((t,1))
     for i in range(t):
-        d[i] = random.randrange(min(e[i]), max(e[i]))
+        d[i] = random.uniform(min(e[i]), max(e[i]))
     e = np.hstack((e,d))
 
 

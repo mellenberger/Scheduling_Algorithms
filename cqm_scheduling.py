@@ -27,8 +27,8 @@ def CVB_ETC_2(t,m,vtask,vmach, umach):
             e[i][j] = random.gammavariate(atask,btask[j])
     return e
 
-tasks = 512
-machines = 16
+tasks = 1000
+machines = 32
 etc = CVB_ETC_2(tasks, machines, 0.1, 0.6, 1000)
 ## Coeffecient-of-Variation Based (CVB) ETC
 # Low task / low machine; high task / low machine; high task / high machine;
@@ -56,10 +56,18 @@ deadlines = np.zeros(tasks)
 for i in range(tasks):
     deadlines[i] = random.uniform(min(etc[i]), max(etc[i]))
 
-np.savetxt('etc_LH_1.txt', etc)
+np.savetxt('larger_LT_HM.txt', etc)
 
 #load etc
-etc = np.loadtxt("deadline_matrices/LT_LM_Inconsistent.txt")
+etc = np.loadtxt("deadline_matrices/LT_LM_PartiallyConsistent.txt")
+
+#Load with deadlines
+tasks = 1000
+machines = 32
+with open('largerDeadline_matrices/HT_HM_PartiallyConsistent.txt', 'r') as file:
+    lines = file.readlines()
+    etc = [list(map(float, line.split()[:-1])) for line in lines]
+    deadlines = [float(line.split()[-1]) for line in lines]
 
 y = [Real(f'runtime_{j}') for j in range((machines))]
 x = [[Binary(f'T{i}_M{j}') for j in range((machines))]
@@ -69,6 +77,11 @@ makespan = [0] * machines
 for j in range(machines):
     for i in range(tasks):
         makespan[j] += etc[i][j] * x[i][j]
+
+taskTimes = [0] * tasks
+for j in range(machines):
+    for i in range(tasks):
+        taskTimes[i] += etc[i][j] * x[i][j]
 
 cqm = ConstrainedQuadraticModel()
 # minimizing max
@@ -90,13 +103,13 @@ for i in range((tasks)):
 
 #Must adhere to deadline
 for i in range((tasks)):
-    cqm.add_constraint(sum(etc[i]*x[i]) <= deadlines[i], label=f'task_deadline_{i}')
+    cqm.add_constraint(taskTimes[i] <= deadlines[i], label=f'task_deadline_{i}')
 
 print(cqm)
 
 sampler = LeapHybridCQMSampler()     
 
-sampleset = sampler.sample_cqm(cqm, time_limit = 5, label="SchedulingDeadlines")  
+sampleset = sampler.sample_cqm(cqm, time_limit = 150, label="HT_HM_PartiallyConsistent_larger")  
 feasible_sampleset = sampleset.filter(lambda row: row.is_feasible)  
 if len(feasible_sampleset):      
    best = feasible_sampleset.first
@@ -107,3 +120,9 @@ scheduled_task = [key for key, val in best.sample.items() if 'T' in key and val]
 print("{} tasks are scheduled.".format(len(scheduled_task)))     
 makespans = [val for key, val in best.sample.items() if 'runtime' in key and val]
 print("Makespan:", max(makespans))
+
+
+for i in range(len(scheduled_task)):
+    task, machine = get_indices(scheduled_task[i])
+    if etc[task][machine] > deadlines[task]:
+        print("MISS", task)
